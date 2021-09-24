@@ -1,9 +1,11 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
+import 'package:share/share.dart';
 
 void main() => runApp(const MyApp());
 
@@ -85,7 +87,26 @@ class QuoteState extends State<QuoteWidget> {
             textAlign: TextAlign.center,
             style: TextStyle(fontStyle: FontStyle.italic),
           ),
-          Padding(padding: EdgeInsets.only(bottom: 180.0)),
+          Padding(padding: EdgeInsets.only(bottom: 20.0)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                  onPressed: () async {
+                    await FlutterClipboard.copy(_quote["quote"].toString());
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: const Text("Citação Copiada!",
+                            textAlign: TextAlign.center)));
+                  },
+                  icon: Icon(Icons.content_copy)),
+              IconButton(
+                  onPressed: () async {
+                    await Share.share(_quote["quote"].toString());
+                  },
+                  icon: Icon(Icons.share))
+            ],
+          ),
+          Padding(padding: EdgeInsets.only(bottom: 250.0)),
           Container(
             width: 130,
             height: 50,
@@ -96,7 +117,7 @@ class QuoteState extends State<QuoteWidget> {
                   backgroundColor:
                       MaterialStateProperty.all<Color>(Colors.deepPurple)),
             ),
-          )
+          ),
         ]);
   }
 }
